@@ -1,0 +1,115 @@
+package org.smartplatforms.oauth2;
+
+import java.io.Serializable;
+import java.nio.charset.Charset;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import org.apache.commons.codec.binary.Base64;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.client.ResourceAccessException;
+
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
+@Component
+public class SmartLaunchContextResolver implements LaunchContextResolver {
+
+	private String fhirEndpoint;
+	private String resolveEndpoint;
+	private String username;
+	private String password;
+
+
+	@Override
+	public Serializable resolve(String launchId, Map<String,String> needs) throws NeedUnmetException {
+
+		String auth = getUsername() + ":" + getPassword();
+
+		String encodedAuth = new String(Base64.encodeBase64(auth.getBytes(Charset.forName("US-ASCII"))));
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("Authorization", "Basic " + encodedAuth);
+		HttpEntity<String> reqAuth = new HttpEntity<String>(headers);
+
+		String url = fhirEndpoint + "/_services/smart/Launch/" + launchId;
+
+		RestTemplate restTemplate = new RestTemplate();
+		ResponseEntity<String> response;
+
+		try {
+			response = restTemplate.exchange(url, HttpMethod.GET, reqAuth, String.class);
+		} catch (ResourceAccessException e ) {
+			throw new NeedUnmetException();
+		} catch (HttpServerErrorException e ) {
+			throw new NeedUnmetException();
+		}
+		if (!response.getStatusCode().equals(HttpStatus.OK)){
+			throw new NeedUnmetException();
+		}
+
+		JsonObject gotParams = ((JsonObject) new JsonParser().parse(response.getBody()))
+			.get("parameters")
+			.getAsJsonObject();
+
+		HashMap<String,String> params = new HashMap<String, String>();
+		// TODO check for mismatched needs and throw an exception if found
+		// TODO verify that the use who created this context is the same as the
+		//      currently authenticated user.
+
+		for (Entry<String, JsonElement> need : gotParams.entrySet()) {
+			String k = need.getKey();
+			if (gotParams.get(k) != null){
+				params.put(k, gotParams.get(k).getAsString());
+			}
+		}
+
+		return params;
+	}
+
+	@Override
+	public String getServiceURL() {
+		return getFhirEndpoint();
+	}
+
+	public String getFhirEndpoint() {
+		return fhirEndpoint;
+	}
+
+	public void setFhirEndpoint(String fhirEndpoint) {
+		this.fhirEndpoint = fhirEndpoint;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public String getResolveEndpoint() {
+		return resolveEndpoint;
+	}
+
+	public void setResolveEndpoint(String resolveEndpoint) {
+		this.resolveEndpoint = resolveEndpoint;
+	}
+
+}

@@ -34,6 +34,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.SequenceGenerator;
 
 /**
  * A set of claims required to fulfill a given permission.
@@ -44,6 +45,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "policy")
 public class Policy {
+	public static final String MY_SEQUENCE_GENERATOR_NAME = "policy_seq";
 
 	private Long id;
 	private String name;
@@ -54,7 +56,8 @@ public class Policy {
 	 * @return the id
 	 */
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(generator = MY_SEQUENCE_GENERATOR_NAME, strategy = GenerationType.SEQUENCE)
+	@SequenceGenerator(name = MY_SEQUENCE_GENERATOR_NAME, sequenceName = MY_SEQUENCE_GENERATOR_NAME, allocationSize = 1)
 	@Column(name = "id")
 	public Long getId() {
 		return id;

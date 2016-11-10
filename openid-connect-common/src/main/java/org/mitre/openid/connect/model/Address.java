@@ -18,6 +18,7 @@ package org.mitre.openid.connect.model;
 
 import java.io.Serializable;
 
+
 public interface Address extends Serializable {
 
 	/**

@@ -35,6 +35,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.SequenceGenerator;
 
 @Entity
 @Table(name = "resource_set")
@@ -50,7 +51,7 @@ public class ResourceSet {
 	public static final String QUERY_BY_OWNER_AND_CLIENT = "ResourceSet.queryByOwnerAndClient";
 	public static final String QUERY_BY_CLIENT = "ResourceSet.queryByClient";
 	public static final String QUERY_ALL = "ResourceSet.queryAll";
-
+	public static final String MY_SEQUENCE_GENERATOR_NAME = "resource_set_seq";
 	public static final String PARAM_OWNER = "owner";
 	public static final String PARAM_CLIENTID = "clientId";
 
@@ -70,7 +71,8 @@ public class ResourceSet {
 	 * @return the id
 	 */
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(generator = MY_SEQUENCE_GENERATOR_NAME, strategy = GenerationType.SEQUENCE)
+	@SequenceGenerator(name = MY_SEQUENCE_GENERATOR_NAME, sequenceName = MY_SEQUENCE_GENERATOR_NAME, allocationSize = 1)
 	@Column(name = "id")
 	public Long getId() {
 		return id;

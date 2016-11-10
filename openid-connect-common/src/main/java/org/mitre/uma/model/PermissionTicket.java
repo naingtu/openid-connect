@@ -37,6 +37,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.SequenceGenerator;
 
 /**
  * 
@@ -57,7 +58,7 @@ public class PermissionTicket {
 	public static final String QUERY_TICKET = "PermissionTicket.queryByTicket";
 	public static final String QUERY_ALL = "PermissionTicket.queryAll";
 	public static final String QUERY_BY_RESOURCE_SET = "PermissionTicket.queryByResourceSet";
-
+	public static final String MY_SEQUENCE_GENERATOR_NAME = "permission_ticket_seq";
 	public static final String PARAM_TICKET = "ticket";
 	public static final String PARAM_RESOURCE_SET_ID = "rsid";
 
@@ -71,7 +72,8 @@ public class PermissionTicket {
 	 * @return the id
 	 */
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(generator = MY_SEQUENCE_GENERATOR_NAME, strategy = GenerationType.SEQUENCE)
+	@SequenceGenerator(name = MY_SEQUENCE_GENERATOR_NAME, sequenceName = MY_SEQUENCE_GENERATOR_NAME, allocationSize = 1)
 	@Column(name = "id")
 	public Long getId() {
 		return id;

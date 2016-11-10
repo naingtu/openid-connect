@@ -31,6 +31,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.SequenceGenerator;
 
 /**
  * Indicator that login to a site should be automatically granted
@@ -50,7 +51,7 @@ public class WhitelistedSite {
 	public static final String QUERY_BY_CREATOR = "WhitelistedSite.getByCreatoruserId";
 	public static final String QUERY_BY_CLIENT_ID = "WhitelistedSite.getByClientId";
 	public static final String QUERY_ALL = "WhitelistedSite.getAll";
-
+	public static final String MY_SEQUENCE_GENERATOR_NAME = "whitelisted_site_seq";
 	public static final String PARAM_USER_ID = "userId";
 	public static final String PARAM_CLIENT_ID = "clientId";
 
@@ -78,7 +79,8 @@ public class WhitelistedSite {
 	 * @return the id
 	 */
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(generator = MY_SEQUENCE_GENERATOR_NAME, strategy = GenerationType.SEQUENCE)
+	@SequenceGenerator(name = MY_SEQUENCE_GENERATOR_NAME, sequenceName = MY_SEQUENCE_GENERATOR_NAME, allocationSize = 1)
 	@Column(name = "id")
 	public Long getId() {
 		return id;

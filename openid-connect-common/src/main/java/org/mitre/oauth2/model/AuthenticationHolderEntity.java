@@ -41,6 +41,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.persistence.SequenceGenerator;
 
 import org.mitre.oauth2.model.convert.SerializableStringConverter;
 import org.mitre.oauth2.model.convert.SimpleGrantedAuthorityStringConverter;
@@ -49,7 +50,7 @@ import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.OAuth2Request;
 
 @Entity
-@Table(name = "authentication_holder")
+@Table(name = "auth_holder")
 @NamedQueries ({
 	@NamedQuery(name = AuthenticationHolderEntity.QUERY_ALL, query = "select a from AuthenticationHolderEntity a"),
 	@NamedQuery(name = AuthenticationHolderEntity.QUERY_GET_UNUSED, query = "select a from AuthenticationHolderEntity a where " +
@@ -61,6 +62,7 @@ public class AuthenticationHolderEntity {
 
 	public static final String QUERY_GET_UNUSED = "AuthenticationHolderEntity.getUnusedAuthenticationHolders";
 	public static final String QUERY_ALL = "AuthenticationHolderEntity.getAll";
+	public static final String MY_SEQUENCE_GENERATOR_NAME = "auth_holder_seq";
 
 	private Long id;
 
@@ -89,7 +91,8 @@ public class AuthenticationHolderEntity {
 	}
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(generator = MY_SEQUENCE_GENERATOR_NAME, strategy = GenerationType.SEQUENCE)
+	@SequenceGenerator(name = MY_SEQUENCE_GENERATOR_NAME, sequenceName = MY_SEQUENCE_GENERATOR_NAME, allocationSize = 1)
 	@Column(name = "id")
 	public Long getId() {
 		return id;
@@ -154,7 +157,7 @@ public class AuthenticationHolderEntity {
 	 */
 	@ElementCollection(fetch = FetchType.EAGER)
 	@CollectionTable(
-			name="authentication_holder_authority",
+			name="auth_holder_authority",
 			joinColumns=@JoinColumn(name="owner_id")
 			)
 	@Convert(converter = SimpleGrantedAuthorityStringConverter.class)
@@ -179,7 +182,7 @@ public class AuthenticationHolderEntity {
 	 */
 	@ElementCollection(fetch = FetchType.EAGER)
 	@CollectionTable(
-			name="authentication_holder_resource_id",
+			name="auth_holder_resource_id",
 			joinColumns=@JoinColumn(name="owner_id")
 			)
 	@Column(name="resource_id")
@@ -235,7 +238,7 @@ public class AuthenticationHolderEntity {
 	 */
 	@ElementCollection(fetch = FetchType.EAGER)
 	@CollectionTable(
-			name="authentication_holder_response_type",
+			name="auth_holder_response_type",
 			joinColumns=@JoinColumn(name="owner_id")
 			)
 	@Column(name="response_type")
@@ -259,7 +262,7 @@ public class AuthenticationHolderEntity {
 	 */
 	@ElementCollection(fetch = FetchType.EAGER)
 	@CollectionTable(
-			name="authentication_holder_extension",
+			name="auth_holder_extension",
 			joinColumns=@JoinColumn(name="owner_id")
 			)
 	@Column(name="val")
@@ -301,7 +304,7 @@ public class AuthenticationHolderEntity {
 	 */
 	@ElementCollection(fetch = FetchType.EAGER)
 	@CollectionTable(
-			name="authentication_holder_scope",
+			name="auth_holder_scope",
 			joinColumns=@JoinColumn(name="owner_id")
 			)
 	@Column(name="scope")
@@ -325,7 +328,7 @@ public class AuthenticationHolderEntity {
 	 */
 	@ElementCollection(fetch = FetchType.EAGER)
 	@CollectionTable(
-			name="authentication_holder_request_parameter",
+			name="auth_holder_request_parameter",
 			joinColumns=@JoinColumn(name="owner_id")
 			)
 	@Column(name="val")

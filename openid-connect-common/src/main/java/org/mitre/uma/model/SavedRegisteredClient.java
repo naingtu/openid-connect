@@ -25,6 +25,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.SequenceGenerator;
 
 import org.mitre.oauth2.model.RegisteredClient;
 import org.mitre.uma.model.convert.RegisteredClientStringConverter;
@@ -36,6 +37,7 @@ import org.mitre.uma.model.convert.RegisteredClientStringConverter;
 @Entity
 @Table(name = "saved_registered_client")
 public class SavedRegisteredClient {
+	public static final String MY_SEQUENCE_GENERATOR_NAME = "saved_registered_client_seq";
 
 	private Long id;
 	private String issuer;
@@ -45,7 +47,8 @@ public class SavedRegisteredClient {
 	 * @return the id
 	 */
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(generator = MY_SEQUENCE_GENERATOR_NAME, strategy = GenerationType.SEQUENCE)
+	@SequenceGenerator(name = MY_SEQUENCE_GENERATOR_NAME, sequenceName = MY_SEQUENCE_GENERATOR_NAME, allocationSize = 1)
 	@Column(name = "id")
 	public Long getId() {
 		return id;

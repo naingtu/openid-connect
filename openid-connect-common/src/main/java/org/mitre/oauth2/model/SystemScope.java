@@ -24,6 +24,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -44,7 +45,7 @@ public class SystemScope {
 
 	public static final String QUERY_BY_VALUE = "SystemScope.getByValue";
 	public static final String QUERY_ALL = "SystemScope.findAll";
-
+	public static final String MY_SEQUENCE_GENERATOR_NAME = "system_scope_seq";
 	public static final String PARAM_VALUE = "value";
 
 	private Long id;
@@ -76,7 +77,8 @@ public class SystemScope {
 	 * @return the id
 	 */
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(generator = MY_SEQUENCE_GENERATOR_NAME, strategy = GenerationType.SEQUENCE)
+	@SequenceGenerator(name = MY_SEQUENCE_GENERATOR_NAME, sequenceName = MY_SEQUENCE_GENERATOR_NAME, allocationSize = 1)
 	@Column(name = "id")
 	public Long getId() {
 		return id;

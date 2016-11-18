@@ -1,4 +1,4 @@
-
+package org.smartplatforms.oauth2;
 
 public class NeedUnmetException extends Exception {
 

@@ -62,3 +62,31 @@ INSERT INTO system_scope (id, scope, description, icon, restricted, default_scop
 
 INSERT INTO system_scope (id, scope, description, icon, restricted, default_scope, structured, structured_param_description) VALUES
   (system_scope_seq.nextval, 'patient/Observation/*.write', 'Write to FHIR Observations Resources', 'user', 0, 0, 0, null);
+
+INSERT INTO system_scope (id, scope, description, icon, restricted, default_scope, structured, structured_param_description) VALUES
+  (system_scope_seq.nextval, 'smart', 'Details of SMART authorization', 'user', 0, 0, 0, null);
+
+INSERT INTO system_scope (id, scope, description, icon, restricted, default_scope, structured, structured_param_description) VALUES
+  (system_scope_seq.nextval, 'smart/orchestrate_launch', 'Orchestrate a launch with EHR context', 'user', 0, 0, 0, null);
+
+INSERT INTO system_scope (id, scope, description, icon, restricted, default_scope, structured, structured_param_description) VALUES
+  (system_scope_seq.nextval, 'launch', 'Launch with an existing context', 'user', 0, 0, 0, null);
+
+INSERT INTO system_scope (id, scope, description, icon, restricted, default_scope, structured, structured_param_description) VALUES
+  (system_scope_seq.nextval, 'launch/patient', 'Launch with patient context', 'user', 0, 0, 0, null);
+
+INSERT INTO system_scope (id, scope, description, icon, restricted, default_scope, structured, structured_param_description) VALUES
+  (system_scope_seq.nextval, 'launch/encounter', 'Launch with encounter context', 'user', 0, 0, 0, null);
+
+INSERT INTO system_scope (id, scope, description, icon, restricted, default_scope, structured, structured_param_description) VALUES
+  (system_scope_seq.nextval, 'launch/resource', 'Launch with resource context', 'user', 0, 0, 0, null);
+
+
+INSERT INTO system_scope (id, scope, description, icon, restricted, default_scope, structured, structured_param_description) VALUES
+  (system_scope_seq.nextval, 'launch/other', 'Launch with other context', 'user', 0, 0, 0, null);
+
+INSERT INTO system_scope (id, scope, description, icon, restricted, default_scope, structured, structured_param_description) VALUES
+  (system_scope_seq.nextval, 'search', 'SMART on FHIR search', 'user', 0, 0, 0, null);
+
+INSERT INTO system_scope (id, scope, description, icon, restricted, default_scope, structured, structured_param_description) VALUES
+  (system_scope_seq.nextval, 'summary', 'SMART on FHIR summary', 'user', 0, 0, 0, null);

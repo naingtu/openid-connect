@@ -379,6 +379,15 @@ CREATE TABLE saved_registered_client (
   registered_client VARCHAR2(4000) --this was 8192... let's see if 4000 works
 );
 
+CREATE TABLE launch_context (
+	id NUMBER PRIMARY KEY,
+  access_token_id NUMBER(19),
+	name VARCHAR2(256),
+	value VARCHAR2(256)
+);
+
+CREATE SEQUENCE launch_context_seq START WITH 1;
+
 CREATE SEQUENCE saved_registered_client_seq START WITH 1;
 
 CREATE INDEX at_tv_idx ON access_token(token_value);

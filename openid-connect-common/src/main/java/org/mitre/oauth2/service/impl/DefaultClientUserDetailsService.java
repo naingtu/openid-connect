@@ -20,6 +20,7 @@ import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 
 import org.mitre.oauth2.model.ClientDetailsEntity;
 import org.mitre.oauth2.model.ClientDetailsEntity.AuthMethod;
@@ -47,9 +48,11 @@ import com.google.common.base.Strings;
 public class DefaultClientUserDetailsService implements UserDetailsService {
 
 	private static GrantedAuthority ROLE_CLIENT = new SimpleGrantedAuthority("ROLE_CLIENT");
+	private static GrantedAuthority ROLE_ADMIN = new SimpleGrantedAuthority("ROLE_ADMIN");
 
 	@Autowired
 	private ClientDetailsEntityService clientDetailsService;
+	private Collection<String> adminClients = new HashSet<String>();
 
 	@Autowired
 	private ConfigurationPropertiesBean config;
@@ -82,6 +85,9 @@ public class DefaultClientUserDetailsService implements UserDetailsService {
 				Collection<GrantedAuthority> authorities = new HashSet<>(client.getAuthorities());
 				authorities.add(ROLE_CLIENT);
 
+				if (adminClients.contains(client.getClientId())){
+					authorities.add(ROLE_ADMIN);
+				}
 				return new User(clientId, password, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities);
 			} else {
 				throw new UsernameNotFoundException("Client not found: " + clientId);
@@ -98,6 +104,14 @@ public class DefaultClientUserDetailsService implements UserDetailsService {
 
 	public void setClientDetailsService(ClientDetailsEntityService clientDetailsService) {
 		this.clientDetailsService = clientDetailsService;
+	}
+
+	public Collection<String> getAdminClients() {
+		return adminClients;
+	}
+
+	public void setAdminClients(Collection<String> adminClients) {
+		this.adminClients = adminClients;
 	}
 
 }

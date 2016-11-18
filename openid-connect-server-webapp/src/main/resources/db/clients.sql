@@ -46,6 +46,8 @@ INSERT INTO client_grant_type (owner_id, grant_type) VALUES
 	(client_details_seq.currval, 'password');
 
 INSERT INTO client_scope (owner_id, scope) VALUES (client_details_seq.currval, 'patient/*.*');
+INSERT INTO client_scope (owner_id, scope) VALUES (client_details_seq.currval, 'launch');
+INSERT INTO client_scope (owner_id, scope) VALUES (client_details_seq.currval, 'launch/patient');
 
 INSERT INTO client_details (id, client_id, client_secret, client_name, dynamically_registered, refresh_token_validity_sec, access_token_validity_sec, id_token_validity_sec, allow_introspection) VALUES
 	(client_details_seq.nextval, 'FHIR', 'secret', 'FHIR Server', 0, null, 3600, 600, 1);

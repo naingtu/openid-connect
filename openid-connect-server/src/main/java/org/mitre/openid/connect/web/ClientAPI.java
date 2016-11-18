@@ -126,7 +126,7 @@ import static org.mitre.oauth2.model.RegisteredClientFields.USERINFO_SIGNED_RESP
 
 @Controller
 @RequestMapping("/" + ClientAPI.URL)
-@PreAuthorize("hasRole('ROLE_USER')")
+@PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_CLIENT')")
 public class ClientAPI {
 
 	public static final String URL = RootController.API_URL + "/clients";

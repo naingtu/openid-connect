@@ -49,6 +49,7 @@ import javax.persistence.SequenceGenerator;
 
 import org.mitre.oauth2.model.convert.JWTStringConverter;
 import org.mitre.uma.model.Permission;
+import org.smartplatforms.oauth2.LaunchContextEntity;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.common.OAuth2AccessTokenJackson1Deserializer;
 import org.springframework.security.oauth2.common.OAuth2AccessTokenJackson1Serializer;
@@ -56,6 +57,7 @@ import org.springframework.security.oauth2.common.OAuth2AccessTokenJackson2Deser
 import org.springframework.security.oauth2.common.OAuth2AccessTokenJackson2Serializer;
 import org.springframework.security.oauth2.common.OAuth2RefreshToken;
 
+import com.google.common.collect.Sets;
 import com.nimbusds.jwt.JWT;
 
 /**
@@ -115,6 +117,8 @@ public class OAuth2AccessTokenEntity implements OAuth2AccessToken {
 
 	private Set<String> scope;
 
+	private Set<LaunchContextEntity> launchContextParams = Sets.newHashSet();
+
 	private Set<Permission> permissions;
 
 	/**
@@ -143,7 +147,8 @@ public class OAuth2AccessTokenEntity implements OAuth2AccessToken {
 	}
 
 	/**
-	 * Get all additional information to be sent to the serializer. Inserts a copy of the IdToken (in JWT String form).
+	 * Get all additional information to be sent to the serializer. Inserts a copy of the IdToken (in JWT String form)
+	 * and launch context params.
 	 */
 	@Override
 	@Transient
@@ -151,6 +156,11 @@ public class OAuth2AccessTokenEntity implements OAuth2AccessToken {
 		Map<String, Object> map = new HashMap<>(); //super.getAdditionalInformation();
 		if (getIdToken() != null) {
 			map.put(ID_TOKEN_FIELD_NAME, getIdTokenString());
+		}
+		if (getLaunchContext() != null) {
+			for (LaunchContextEntity cparam : getLaunchContext()){
+				map.put(cparam.getName(), cparam.getValue());
+			}
 		}
 		return map;
 	}
@@ -266,6 +276,19 @@ public class OAuth2AccessTokenEntity implements OAuth2AccessToken {
 	@JoinColumn(name = "id_token_id")
 	public OAuth2AccessTokenEntity getIdToken() {
 		return idToken;
+	}
+
+	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
+ 	@JoinColumn(name="access_token_id")
+ 	public Set<LaunchContextEntity> getLaunchContext() {
+		return launchContextParams;
+	}
+
+	/**
+	 * @param launchContetParams the LaunchContextParams to set
+	 */
+	public void setLaunchContext(Set<LaunchContextEntity> launchContextParams) {
+		this.launchContextParams = launchContextParams;
 	}
 
 	/**

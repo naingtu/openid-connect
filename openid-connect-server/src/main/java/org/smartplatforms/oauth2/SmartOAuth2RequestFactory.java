@@ -9,7 +9,7 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.mitre.oauth2.service.ClientDetailsEntityService;
-import org.mitre.openid.connect.ConnectOAuth2RequestFactory;
+import org.mitre.openid.connect.request.ConnectOAuth2RequestFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.common.exceptions.InvalidScopeException;
 

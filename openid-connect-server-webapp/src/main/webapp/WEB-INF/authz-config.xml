@@ -29,12 +29,14 @@
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.1.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.1.xsd">
 
+	<bean id="oAuth2RequestFactory" class="org.smartplatforms.oauth2.SmartOAuth2RequestFactory"
+		  name="authRequestFactory, requestFactory" />
 
 	<oauth:authorization-server 
 		client-details-service-ref="defaultOAuth2ClientDetailsEntityService"
-		authorization-request-manager-ref="connectOAuth2RequestFactory" 
+		authorization-request-manager-ref="oAuth2RequestFactory"
 		token-services-ref="defaultOAuth2ProviderTokenService" 
-		user-approval-handler-ref="tofuUserApprovalHandler" 
+		user-approval-handler-ref="smartUserApprovalHandler"
 		request-validator-ref="oauthRequestValidator"
 		redirect-resolver-ref="blacklistAwareRedirectResolver"
 		authorization-endpoint-url="/authorize" 
@@ -51,9 +53,31 @@
 
 	</oauth:authorization-server>
 
+	<bean id="tokenEnhancer" class="org.smartplatforms.oauth2.SmartLaunchTokenEnhancer" />
 	<bean id="oauthAccessDeniedHandler" class="org.springframework.security.oauth2.provider.error.OAuth2AccessDeniedHandler" />
+	<bean id="oauthRequestValidator" class="org.smartplatforms.oauth2.ScopeValidator" />
 
-	<bean id="oauthRequestValidator" class="org.mitre.oauth2.token.StructuredScopeAwareOAuth2RequestValidator" />
+	<!--<bean id="oauthRequestValidator" class="org.mitre.oauth2.token.StructuredScopeAwareOAuth2RequestValidator" />-->
+
+	<bean id="smartLaunchContextResolver" class="org.smartplatforms.oauth2.SmartLaunchContextResolver">
+		<property name="fhirEndpoint"
+			value="${CONTEXT_FHIR_ENDPOINT:http://localhost:9080}" />
+		<property name="resolveEndpoint"
+			value="${CONTEXT_RESOLVE_ENDPOINT:http://localhost:9090}" />
+
+		<property name="username" value="${CONTEXT_USERNAME:client}" />
+		<property name="password" value="${CONTEXT_PASSWORD:secret}" />
+	</bean>
+
+	<bean id="oauth2AuthorizationEndpoint" class="org.smartplatforms.oauth2.SmartAuthorizationEndpoint">
+		<property name="tokenGranter" ref="oauth2TokenGranter" />
+		<property name="clientDetailsService" ref="defaultOAuth2ClientDetailsEntityService" />
+		<property name="oAuth2RequestFactory" ref="oAuth2RequestFactory" />
+		<property name="userApprovalHandler" ref="smartUserApprovalHandler" />
+		<property name="implicitGrantService" ref="inMemoryImplicitGrantService" />
+		<property name="oAuth2RequestValidator" ref="oauthRequestValidator" />
+		<property name="authorizationCodeServices" ref="defaultOAuth2AuthorizationCodeService" />
+	</bean>
 
 	<!-- Error page handler. -->
 	<mvc:view-controller path="/error" view-name="error" />

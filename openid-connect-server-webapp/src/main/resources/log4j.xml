@@ -29,6 +29,7 @@
 	<!-- Application Loggers -->
 	<logger name="org.mitre.openid">
 		<level value="info" />
+		<level value="debug" />
 	</logger>
 	<logger name="org.mitre.oauth2">
 		<level value="info" />

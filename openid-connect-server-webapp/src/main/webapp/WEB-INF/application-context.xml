@@ -32,7 +32,7 @@
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.1.xsd">
 
 	<!-- Scan for components -->
-	<context:component-scan annotation-config="true" base-package="org.mitre" />
+	<context:component-scan annotation-config="true" base-package="org.mitre,org.smartplatforms" />
 
 	<!-- Enables the Spring MVC @Controller programming model -->
 	<tx:annotation-driven transaction-manager="transactionManager" />
@@ -83,7 +83,7 @@
 		<security:http-basic entry-point-ref="oauthAuthenticationEntryPoint" />
 		<!-- include this only if you need to authenticate clients via request parameters -->
 		<security:custom-filter ref="clientAssertionEndpointFilter" after="PRE_AUTH_FILTER" /> <!-- this one has to go first -->
-		<security:custom-filter ref="clientCredentialsEndpointFilter" after="BASIC_AUTH_FILTER" />
+		<security:custom-filter ref="clientCredentialsEndpointFilter" before="BASIC_AUTH_FILTER" />
 		<security:custom-filter ref="corsFilter" after="SECURITY_CONTEXT_FILTER" />
 		<security:access-denied-handler ref="oauthAccessDeniedHandler" />
 	</security:http>
@@ -125,7 +125,12 @@
 		<security:expression-handler ref="oauthWebExpressionHandler" />
 	</security:http>
 
- 	<security:http pattern="/#{T(org.mitre.openid.connect.web.RootController).API_URL}/**" use-expressions="true" entry-point-ref="oauthAuthenticationEntryPoint" create-session="never">
+ 	<security:http pattern="/#{T(org.mitre.openid.connect.web.RootController).API_URL}/**"
+	 		use-expressions="true"
+	 		entry-point-ref="oauthAuthenticationEntryPoint"
+	 		create-session="never"
+	 		authentication-manager-ref="clientAuthenticationManager">
+		<security:http-basic entry-point-ref="oauthAuthenticationEntryPoint" />
 		<security:custom-filter ref="resourceServerFilter" before="PRE_AUTH_FILTER" />
 		<security:expression-handler ref="oauthWebExpressionHandler" />
 	</security:http>
@@ -184,6 +189,14 @@
 	<bean id="clientAssertionEndpointFilter" class="org.mitre.openid.connect.assertion.JWTBearerClientAssertionTokenEndpointFilter">
 		<constructor-arg name="additionalMatcher" ref="clientAuthMatcher" />
 		<property name="authenticationManager" ref="clientAssertionAuthenticationManager" />
+	</bean>
+
+	<bean id="clientUserDetailsService" class="org.mitre.oauth2.service.impl.DefaultClientUserDetailsService">
+	     <property name="adminClients">
+	        <set>
+	           <value>client</value>
+	        </set>
+	      </property>
 	</bean>
 
 	<security:authentication-manager id="clientAuthenticationManager">

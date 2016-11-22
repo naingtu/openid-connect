@@ -90,3 +90,4 @@ INSERT INTO system_scope (id, scope, description, icon, restricted, default_scop
 
 INSERT INTO system_scope (id, scope, description, icon, restricted, default_scope, structured, structured_param_description) VALUES
   (system_scope_seq.nextval, 'summary', 'SMART on FHIR summary', 'user', 0, 0, 0, null);
+

@@ -43,7 +43,7 @@
 		<property name="dataSourceProperties">
 			<props>
 
-				<prop key="serverName">192.168.131.135</prop>
+				<prop key="serverName">172.16.221.128</prop>
 				<prop key="portNumber">1521</prop>
 				<prop key="driverType">thin</prop>
 				<prop key="databaseName">XE</prop>

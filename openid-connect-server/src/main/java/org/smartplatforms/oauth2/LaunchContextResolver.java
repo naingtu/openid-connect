@@ -8,4 +8,5 @@ import org.smartplatforms.oauth2.LaunchContextEntity;
 
 public interface LaunchContextResolver {
 	public Serializable resolve(String launchId, Map<String,String> needs) throws NeedUnmetException;
+	public String getServiceURL();
 }

@@ -46,6 +46,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
+import javax.persistence.SequenceGenerator;
 
 import org.mitre.oauth2.model.convert.JWEAlgorithmStringConverter;
 import org.mitre.oauth2.model.convert.JWEEncryptionMethodStringConverter;
@@ -78,6 +79,7 @@ public class ClientDetailsEntity implements ClientDetails {
 
 	public static final String QUERY_BY_CLIENT_ID = "ClientDetailsEntity.getByClientId";
 	public static final String QUERY_ALL = "ClientDetailsEntity.findAll";
+	public static final String MY_SEQUENCE_GENERATOR_NAME = "client_details_seq";
 
 	public static final String PARAM_CLIENT_ID = "clientId";
 
@@ -257,7 +259,8 @@ public class ClientDetailsEntity implements ClientDetails {
 	 * @return the id
 	 */
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(generator = MY_SEQUENCE_GENERATOR_NAME, strategy = GenerationType.SEQUENCE)
+	@SequenceGenerator(name = MY_SEQUENCE_GENERATOR_NAME, sequenceName = MY_SEQUENCE_GENERATOR_NAME, allocationSize = 1)
 	@Column(name = "id")
 	public Long getId() {
 		return id;
@@ -315,7 +318,7 @@ public class ClientDetailsEntity implements ClientDetails {
 	 * @return the idTokenValiditySeconds
 	 */
 	@Basic
-	@Column(name="id_token_validity_seconds")
+	@Column(name="id_token_validity_sec")
 	public Integer getIdTokenValiditySeconds() {
 		return idTokenValiditySeconds;
 	}
@@ -497,7 +500,7 @@ public class ClientDetailsEntity implements ClientDetails {
 
 	@Override
 	@Basic
-	@Column(name="access_token_validity_seconds")
+	@Column(name="access_token_validity_sec")
 	public Integer getAccessTokenValiditySeconds() {
 		return accessTokenValiditySeconds;
 	}
@@ -511,7 +514,7 @@ public class ClientDetailsEntity implements ClientDetails {
 
 	@Override
 	@Basic
-	@Column(name="refresh_token_validity_seconds")
+	@Column(name="refresh_token_validity_sec")
 	public Integer getRefreshTokenValiditySeconds() {
 		return refreshTokenValiditySeconds;
 	}
@@ -735,7 +738,7 @@ public class ClientDetailsEntity implements ClientDetails {
 	}
 
 	@Basic
-	@Column(name = "request_object_signing_alg")
+	@Column(name = "request_object_sign_alg")
 	@Convert(converter = JWSAlgorithmStringConverter.class)
 	public JWSAlgorithm getRequestObjectSigningAlg() {
 		return requestObjectSigningAlg;
@@ -746,7 +749,7 @@ public class ClientDetailsEntity implements ClientDetails {
 	}
 
 	@Basic
-	@Column(name = "user_info_signed_response_alg")
+	@Column(name = "user_info_signed_resp_alg")
 	@Convert(converter = JWSAlgorithmStringConverter.class)
 	public JWSAlgorithm getUserInfoSignedResponseAlg() {
 		return userInfoSignedResponseAlg;
@@ -757,7 +760,7 @@ public class ClientDetailsEntity implements ClientDetails {
 	}
 
 	@Basic
-	@Column(name = "user_info_encrypted_response_alg")
+	@Column(name = "user_info_encr_resp_alg")
 	@Convert(converter = JWEAlgorithmStringConverter.class)
 	public JWEAlgorithm getUserInfoEncryptedResponseAlg() {
 		return userInfoEncryptedResponseAlg;
@@ -768,7 +771,7 @@ public class ClientDetailsEntity implements ClientDetails {
 	}
 
 	@Basic
-	@Column(name = "user_info_encrypted_response_enc")
+	@Column(name = "user_info_encr_resp_enc")
 	@Convert(converter = JWEEncryptionMethodStringConverter.class)
 	public EncryptionMethod getUserInfoEncryptedResponseEnc() {
 		return userInfoEncryptedResponseEnc;
@@ -779,7 +782,7 @@ public class ClientDetailsEntity implements ClientDetails {
 	}
 
 	@Basic
-	@Column(name="id_token_signed_response_alg")
+	@Column(name="id_token_signed_resp_alg")
 	@Convert(converter = JWSAlgorithmStringConverter.class)
 	public JWSAlgorithm getIdTokenSignedResponseAlg() {
 		return idTokenSignedResponseAlg;
@@ -790,7 +793,7 @@ public class ClientDetailsEntity implements ClientDetails {
 	}
 
 	@Basic
-	@Column(name = "id_token_encrypted_response_alg")
+	@Column(name = "id_token_encr_resp_alg")
 	@Convert(converter = JWEAlgorithmStringConverter.class)
 	public JWEAlgorithm getIdTokenEncryptedResponseAlg() {
 		return idTokenEncryptedResponseAlg;
@@ -801,7 +804,7 @@ public class ClientDetailsEntity implements ClientDetails {
 	}
 
 	@Basic
-	@Column(name = "id_token_encrypted_response_enc")
+	@Column(name = "id_token_encr_resp_enc")
 	@Convert(converter = JWEEncryptionMethodStringConverter.class)
 	public EncryptionMethod getIdTokenEncryptedResponseEnc() {
 		return idTokenEncryptedResponseEnc;
@@ -812,7 +815,7 @@ public class ClientDetailsEntity implements ClientDetails {
 	}
 
 	@Basic
-	@Column(name="token_endpoint_auth_signing_alg")
+	@Column(name="token_endpoint_auth_sign_alg")
 	@Convert(converter = JWSAlgorithmStringConverter.class)
 	public JWSAlgorithm getTokenEndpointAuthSigningAlg() {
 		return tokenEndpointAuthSigningAlg;
@@ -903,7 +906,7 @@ public class ClientDetailsEntity implements ClientDetails {
 	 */
 	@ElementCollection(fetch = FetchType.EAGER)
 	@CollectionTable(
-			name="client_post_logout_redirect_uri",
+			name="client_post_logout_redir_uri",
 			joinColumns=@JoinColumn(name="owner_id")
 			)
 	@Column(name="post_logout_redirect_uri")

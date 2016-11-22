@@ -28,6 +28,7 @@ import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.SequenceGenerator;
 
 /**
  * @author jricher
@@ -41,6 +42,7 @@ import javax.persistence.Table;
 public class BlacklistedSite {
 
 	public static final String QUERY_ALL = "BlacklistedSite.getAll";
+	public static final String MY_SEQUENCE_GENERATOR_NAME = "blacklisted_site_seq";
 
 	// unique id
 	private Long id;
@@ -56,7 +58,8 @@ public class BlacklistedSite {
 	 * @return the id
 	 */
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(generator = MY_SEQUENCE_GENERATOR_NAME, strategy = GenerationType.SEQUENCE)
+	@SequenceGenerator(name = MY_SEQUENCE_GENERATOR_NAME, sequenceName = MY_SEQUENCE_GENERATOR_NAME, allocationSize = 1)
 	@Column(name = "id")
 	public Long getId() {
 		return id;

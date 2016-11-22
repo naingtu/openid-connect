@@ -33,6 +33,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.persistence.SequenceGenerator;
 
 import org.mitre.oauth2.model.convert.SimpleGrantedAuthorityStringConverter;
 import org.springframework.security.core.Authentication;
@@ -59,6 +60,7 @@ public class SavedUserAuthentication implements Authentication {
 	private boolean authenticated;
 
 	private String sourceClass;
+	public static final String MY_SEQUENCE_GENERATOR_NAME = "saved_user_auth_seq";
 
 	/**
 	 * Create a Saved Auth from an existing Auth token
@@ -87,7 +89,8 @@ public class SavedUserAuthentication implements Authentication {
 	 * @return the id
 	 */
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(generator = MY_SEQUENCE_GENERATOR_NAME, strategy = GenerationType.SEQUENCE)
+	@SequenceGenerator(name = MY_SEQUENCE_GENERATOR_NAME, sequenceName = MY_SEQUENCE_GENERATOR_NAME, allocationSize = 1)
 	@Column(name = "id")
 	public Long getId() {
 		return id;

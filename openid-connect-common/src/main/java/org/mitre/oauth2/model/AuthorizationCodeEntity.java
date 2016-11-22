@@ -30,6 +30,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
+import javax.persistence.SequenceGenerator;
 
 /**
  * Entity class for authorization codes
@@ -47,7 +48,7 @@ public class AuthorizationCodeEntity {
 
 	public static final String QUERY_BY_VALUE = "AuthorizationCodeEntity.getByValue";
 	public static final String QUERY_EXPIRATION_BY_DATE = "AuthorizationCodeEntity.expirationByDate";
-
+	public static final String MY_SEQUENCE_GENERATOR_NAME = "authorization_code_seq";
 	public static final String PARAM_DATE = "date";
 
 	private Long id;
@@ -81,7 +82,8 @@ public class AuthorizationCodeEntity {
 	 * @return the id
 	 */
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(generator = MY_SEQUENCE_GENERATOR_NAME, strategy = GenerationType.SEQUENCE)
+	@SequenceGenerator(name = MY_SEQUENCE_GENERATOR_NAME, sequenceName = MY_SEQUENCE_GENERATOR_NAME, allocationSize = 1)
 	@Column(name = "id")
 	public Long getId() {
 		return id;

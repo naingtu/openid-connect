@@ -45,6 +45,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.Transient;
+import javax.persistence.SequenceGenerator;
 
 import org.mitre.oauth2.model.convert.JWTStringConverter;
 import org.mitre.uma.model.Permission;
@@ -94,6 +95,7 @@ public class OAuth2AccessTokenEntity implements OAuth2AccessToken {
 	public static final String PARAM_RESOURCE_SET_ID = "rsid";
 
 	public static String ID_TOKEN_FIELD_NAME = "id_token";
+	public static final String MY_SEQUENCE_GENERATOR_NAME = "access_token_seq";
 
 	private Long id;
 
@@ -126,7 +128,8 @@ public class OAuth2AccessTokenEntity implements OAuth2AccessToken {
 	 * @return the id
 	 */
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(generator = MY_SEQUENCE_GENERATOR_NAME, strategy = GenerationType.SEQUENCE)
+	@SequenceGenerator(name = MY_SEQUENCE_GENERATOR_NAME, sequenceName = MY_SEQUENCE_GENERATOR_NAME, allocationSize = 1)
 	@Column(name = "id")
 	public Long getId() {
 		return id;

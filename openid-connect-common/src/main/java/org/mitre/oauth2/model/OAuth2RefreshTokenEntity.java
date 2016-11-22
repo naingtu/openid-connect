@@ -36,6 +36,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.Transient;
+import javax.persistence.SequenceGenerator;
 
 import org.mitre.oauth2.model.convert.JWTStringConverter;
 import org.springframework.security.oauth2.common.OAuth2RefreshToken;
@@ -64,6 +65,7 @@ public class OAuth2RefreshTokenEntity implements OAuth2RefreshToken {
 	public static final String PARAM_TOKEN_VALUE = "tokenValue";
 	public static final String PARAM_CLIENT = "client";
 	public static final String PARAM_DATE = "date";
+	public static final String MY_SEQUENCE_GENERATOR_NAME = "refresh_token_seq";
 
 	private Long id;
 
@@ -88,7 +90,8 @@ public class OAuth2RefreshTokenEntity implements OAuth2RefreshToken {
 	 * @return the id
 	 */
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(generator = MY_SEQUENCE_GENERATOR_NAME, strategy = GenerationType.SEQUENCE)
+	@SequenceGenerator(name = MY_SEQUENCE_GENERATOR_NAME, sequenceName = MY_SEQUENCE_GENERATOR_NAME, allocationSize = 1)
 	@Column(name = "id")
 	public Long getId() {
 		return id;

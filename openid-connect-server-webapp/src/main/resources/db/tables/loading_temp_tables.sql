@@ -3,6 +3,7 @@
 -- These are not needed if you're not using the users.sql/clients.sql files to bootstrap the database.
 --
 
+/*
 CREATE TEMPORARY TABLE IF NOT EXISTS authorities_TEMP (
       username varchar(50) not null,
       authority varchar(50) not null,
@@ -73,3 +74,4 @@ CREATE TEMPORARY TABLE IF NOT EXISTS system_scope_TEMP (
 	structured BOOLEAN,
 	structured_param_description VARCHAR(256)
 );
+*/

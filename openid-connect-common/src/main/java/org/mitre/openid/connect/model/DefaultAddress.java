@@ -25,12 +25,14 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.SequenceGenerator;
 
 @Entity
 @Table(name="address")
 public class DefaultAddress implements Address {
 
 	private static final long serialVersionUID = -1304880008685206811L;
+	public static final String MY_SEQUENCE_GENERATOR_NAME = "address_seq";
 
 	private Long id;
 	private String formatted;
@@ -149,7 +151,8 @@ public class DefaultAddress implements Address {
 	 * @return the id
 	 */
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@GeneratedValue(generator = MY_SEQUENCE_GENERATOR_NAME, strategy = GenerationType.SEQUENCE)
+	@SequenceGenerator(name = MY_SEQUENCE_GENERATOR_NAME, sequenceName = MY_SEQUENCE_GENERATOR_NAME, allocationSize = 1)
 	@Column(name = "id")
 	public Long getId() {
 		return id;

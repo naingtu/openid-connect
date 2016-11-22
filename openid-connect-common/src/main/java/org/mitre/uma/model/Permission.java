@@ -30,6 +30,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.SequenceGenerator;
 
 /**
  * @author  jricher
@@ -37,6 +38,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "permission")
 public class Permission {
+	public static final String MY_SEQUENCE_GENERATOR_NAME = "permission_seq";
 
 	private Long id;
 	private ResourceSet resourceSet;
@@ -46,7 +48,8 @@ public class Permission {
 	 * @return the id
 	 */
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(generator = MY_SEQUENCE_GENERATOR_NAME, strategy = GenerationType.SEQUENCE)
+	@SequenceGenerator(name = MY_SEQUENCE_GENERATOR_NAME, sequenceName = MY_SEQUENCE_GENERATOR_NAME, allocationSize = 1)
 	@Column(name = "id")
 	public Long getId() {
 		return id;

@@ -28,6 +28,7 @@ import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.SequenceGenerator;
 
 /**
  * 
@@ -46,7 +47,7 @@ public class PairwiseIdentifier {
 
 	public static final String QUERY_BY_SECTOR_IDENTIFIER = "PairwiseIdentifier.getBySectorIdentifier";
 	public static final String QUERY_ALL = "PairwiseIdentifier.getAll";
-
+	public static final String MY_SEQUENCE_GENERATOR_NAME = "pairwise_identifier_seq";
 	public static final String PARAM_SECTOR_IDENTIFIER = "sectorIdentifier";
 	public static final String PARAM_SUB = "sub";
 
@@ -59,7 +60,8 @@ public class PairwiseIdentifier {
 	 * @return the id
 	 */
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@GeneratedValue(generator = MY_SEQUENCE_GENERATOR_NAME, strategy = GenerationType.SEQUENCE)
+	@SequenceGenerator(name = MY_SEQUENCE_GENERATOR_NAME, sequenceName = MY_SEQUENCE_GENERATOR_NAME, allocationSize = 1)
 	@Column(name = "id")
 	public Long getId() {
 		return id;

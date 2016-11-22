@@ -32,6 +32,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.SequenceGenerator;
 
 import org.mitre.openid.connect.model.convert.JsonObjectStringConverter;
 
@@ -48,7 +49,7 @@ public class DefaultUserInfo implements UserInfo {
 
 	public static final String QUERY_BY_USERNAME = "DefaultUserInfo.getByUsername";
 	public static final String QUERY_BY_EMAIL = "DefaultUserInfo.getByEmailAddress";
-
+	public static final String MY_SEQUENCE_GENERATOR_NAME = "address_seq";
 	public static final String PARAM_USERNAME = "username";
 	public static final String PARAM_EMAIL = "email";
 
@@ -82,7 +83,8 @@ public class DefaultUserInfo implements UserInfo {
 	 * @return the id
 	 */
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@GeneratedValue(generator = MY_SEQUENCE_GENERATOR_NAME, strategy = GenerationType.SEQUENCE)
+	@SequenceGenerator(name = MY_SEQUENCE_GENERATOR_NAME, sequenceName = MY_SEQUENCE_GENERATOR_NAME, allocationSize = 1)
 	@Column(name = "id")
 	public Long getId() {
 		return id;

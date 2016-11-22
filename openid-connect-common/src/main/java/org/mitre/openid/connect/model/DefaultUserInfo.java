@@ -49,7 +49,7 @@ public class DefaultUserInfo implements UserInfo {
 
 	public static final String QUERY_BY_USERNAME = "DefaultUserInfo.getByUsername";
 	public static final String QUERY_BY_EMAIL = "DefaultUserInfo.getByEmailAddress";
-	public static final String MY_SEQUENCE_GENERATOR_NAME = "address_seq";
+	public static final String MY_SEQUENCE_GENERATOR_NAME = "user_info_seq";
 	public static final String PARAM_USERNAME = "username";
 	public static final String PARAM_EMAIL = "email";
 

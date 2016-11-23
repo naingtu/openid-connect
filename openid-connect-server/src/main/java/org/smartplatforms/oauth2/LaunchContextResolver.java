@@ -1,3 +1,4 @@
+
 package org.smartplatforms.oauth2;
 
 import java.io.Serializable;

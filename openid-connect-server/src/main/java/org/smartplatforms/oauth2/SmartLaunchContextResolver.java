@@ -79,7 +79,7 @@ public class SmartLaunchContextResolver implements LaunchContextResolver {
 	public String getServiceURL() {
 		return getFhirEndpoint();
 	}
-	
+
 	public String getFhirEndpoint() {
 		return fhirEndpoint;
 	}

@@ -17,8 +17,12 @@
 
 package org.mitre.oauth2.model.convert;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.util.Date;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
@@ -26,40 +30,74 @@ import javax.persistence.Converter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.nimbusds.jose.util.Base64;
+
 /**
- * Translates a Serializable object of certain primitive types
- * into a String for storage in the database, for use with the
- * OAuth2Request extensions map.
+ * Translates a Serializable object of certain primitive types into a String for
+ * storage in the database, for use with the OAuth2Request extensions map.
  * 
  * This class does allow some extension data to be lost.
  * 
  * @author jricher
- *
+ * 
  */
 @Converter
-public class SerializableStringConverter implements AttributeConverter<Serializable, String> {
+public class SerializableStringConverter implements
+		AttributeConverter<Serializable, String> {
 
-	private static Logger logger = LoggerFactory.getLogger(SerializableStringConverter.class);
+	private static Logger logger = LoggerFactory
+			.getLogger(SerializableStringConverter.class);
 
 	@Override
 	public String convertToDatabaseColumn(Serializable attribute) {
-		if (attribute == null) {
-			return null;
-		} else if (attribute instanceof String) {
-			return (String) attribute;
-		} else if (attribute instanceof Long) {
-			return attribute.toString();
-		} else if (attribute instanceof Date) {
-			return Long.toString(((Date)attribute).getTime());
-		} else {
-			logger.warn("Dropping data from request: " + attribute + " :: " + attribute.getClass());
-			return null;
+		String str = null;
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		ObjectOutputStream oos = null;
+		try {
+			try {
+				oos = new ObjectOutputStream(baos);
+				oos.writeObject(attribute);
+				str = Base64.encode(baos.toByteArray()).toString();
+			} finally {
+				try {
+					baos.close();
+				} finally {
+					if (oos != null) {
+						oos.close();
+					}
+				}
+			}
+		} catch (IOException ioe) {
+			logger.warn("Dropping data from request: " + attribute + " :: "
+					+ attribute.getClass());
 		}
+
+		return str;
 	}
 
 	@Override
 	public Serializable convertToEntityAttribute(String dbData) {
-		return dbData;
+		byte[] bytes = new Base64(dbData).decode();
+		Serializable obj = null;
+		ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
+		ObjectInputStream ois = null;
+		try {
+			try {
+				ois = new ObjectInputStream(bais);
+				obj = (Serializable) ois.readObject();
+			} finally {
+				try {
+					bais.close();
+				} finally {
+					if (ois != null) {
+						ois.close();
+					}
+				}
+			}
+		} catch (Exception e) {
+			logger.warn("Error deserialising " + dbData,e);
+		}
+		return obj;
 	}
 
 }

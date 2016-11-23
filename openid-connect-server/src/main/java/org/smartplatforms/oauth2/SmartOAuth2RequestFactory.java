@@ -12,7 +12,6 @@ import org.mitre.oauth2.service.ClientDetailsEntityService;
 import org.mitre.openid.connect.request.ConnectOAuth2RequestFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.common.exceptions.InvalidScopeException;
-
 import org.springframework.security.oauth2.provider.AuthorizationRequest;
 import org.springframework.stereotype.Service;
 

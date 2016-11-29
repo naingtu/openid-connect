@@ -22,6 +22,7 @@ import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.Sets;
+import com.google.gson.Gson;
 
 @Service
 public class SmartOAuth2RequestFactory extends ConnectOAuth2RequestFactory {
@@ -29,7 +30,9 @@ public class SmartOAuth2RequestFactory extends ConnectOAuth2RequestFactory {
 	@Autowired
 	private LaunchContextResolver launchContextResolver;
 
-	Predicate<String> isLaunchContext = new Predicate<String>() {
+    private Gson gson = new Gson();
+
+    Predicate<String> isLaunchContext = new Predicate<String>() {
 		@Override
 		public boolean apply(String input) {
 			return input.startsWith("launch");
@@ -64,7 +67,10 @@ public class SmartOAuth2RequestFactory extends ConnectOAuth2RequestFactory {
 		} else {
 			if (launchId != null) {
 				try {
-					ret.getExtensions().put("launch_context", launchContextResolver.resolve(launchId, launchReqs));
+                    @SuppressWarnings("unchecked")
+                    HashMap<String,String> params = (HashMap<String, String>)launchContextResolver.resolve(launchId, launchReqs);
+
+                    ret.getExtensions().put("launch_context", gson.toJson(params));
 				} catch (NeedUnmetException e1) {
 					ret.getExtensions().put("invalid_launch", "Couldn't resolve launch id: " + launchId);
 				}

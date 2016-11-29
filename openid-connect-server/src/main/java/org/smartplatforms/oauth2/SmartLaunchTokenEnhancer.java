@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 
 import com.google.common.base.Function;
 import com.google.common.collect.FluentIterable;
+import com.google.gson.Gson;
 
 @Component
 public class SmartLaunchTokenEnhancer extends ConnectTokenEnhancer {
@@ -23,7 +24,9 @@ public class SmartLaunchTokenEnhancer extends ConnectTokenEnhancer {
 	@Autowired
 	private LaunchContextResolver launchContextResolver;
 
-	Function<LaunchContextEntity, String> key = new Function<LaunchContextEntity, String>() {
+    private Gson gson = new Gson();
+
+    Function<LaunchContextEntity, String> key = new Function<LaunchContextEntity, String>() {
 		@Override
 		public String apply(LaunchContextEntity input) {
 			return input.getName();
@@ -45,12 +48,15 @@ public class SmartLaunchTokenEnhancer extends ConnectTokenEnhancer {
 	public OAuth2AccessToken enhance(OAuth2AccessToken accessToken,	OAuth2Authentication authentication)  {
 		OAuth2AccessTokenEntity ret = (OAuth2AccessTokenEntity) super.enhance(accessToken, authentication);
 
-		@SuppressWarnings("unchecked")
-		Map<String,String> contextMap = (HashMap<String,String>) authentication.getOAuth2Request().getExtensions().get("launch_context");
+        @SuppressWarnings("unchecked")
+        String extensions = (String) authentication.getOAuth2Request().getExtensions().get("launch_context");
 
-		if (contextMap == null) {
-			return ret;
-		}
+        if (extensions == null) {
+            return ret;
+        }
+
+        @SuppressWarnings("unchecked")
+        Map<String, String> contextMap = (HashMap<String,String>)gson.fromJson(extensions, HashMap.class);
 
 		Set<LaunchContextEntity> context = FluentIterable
 			.from(contextMap.entrySet())

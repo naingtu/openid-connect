@@ -13,6 +13,9 @@ import org.mitre.openid.connect.request.ConnectOAuth2RequestFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.common.exceptions.InvalidScopeException;
 import org.springframework.security.oauth2.provider.AuthorizationRequest;
+import org.springframework.security.oauth2.provider.ClientDetails;
+import org.springframework.security.oauth2.provider.OAuth2Request;
+import org.springframework.security.oauth2.provider.TokenRequest;
 import org.springframework.stereotype.Service;
 
 import com.google.common.base.Function;
@@ -107,4 +110,34 @@ public class SmartOAuth2RequestFactory extends ConnectOAuth2RequestFactory {
 		}
 	};
 
+	@Override
+	public OAuth2Request createOAuth2Request(ClientDetails client,
+			TokenRequest tokenRequest) {
+		OAuth2Request ret = super.createOAuth2Request(client, tokenRequest);
+		HashMap<String, String> launchReqs = new HashMap<String, String>();
+
+		for (Entry<String, String> e : FluentIterable.from(ret.getScope())
+			.filter(isLaunchContext).transform(toMapEntry)) {
+			launchReqs.put(e.getKey(), e.getValue());
+		}
+
+		boolean requestingLaunch = launchReqs.size() > 0;
+
+		launchReqs.remove("launch");
+
+		String launchId = ret.getRequestParameters().get("launch");
+		if (launchId != null) {
+			try {
+				ret.getExtensions().put("launch_context", launchContextResolver.resolve(launchId, launchReqs));
+			} catch (NeedUnmetException e1) {
+				ret.getExtensions().put("invalid_launch", "Couldn't resolve launch id: " + launchId);
+			}
+		} else if (requestingLaunch) { // asking for launch, but no launch ID provided
+			ret.getExtensions().put("external_launch_required", launchReqs);
+		}
+
+		return ret;
+	}
+
+	
 }
